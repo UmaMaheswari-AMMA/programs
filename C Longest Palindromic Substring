@@ -1,0 +1,40 @@
+#include <string.h>
+#include <stdlib.h>
+
+char* longestPalindrome(char* s) {
+    int n = strlen(s);
+    if (n < 1) return "";
+
+    int start = 0, maxLen = 0;
+
+    for (int i = 0; i < n; i++) {
+        // Case 1: Odd length palindrome (center is a single character, e.g., "aba")
+        int l = i, r = i;
+        while (l >= 0 && r < n && s[l] == s[r]) {
+            if (r - l + 1 > maxLen) {
+                start = l;
+                maxLen = r - l + 1;
+            }
+            l--;
+            r++;
+        }
+
+        // Case 2: Even length palindrome (center is between two characters, e.g., "abba")
+        l = i, r = i + 1;
+        while (l >= 0 && r < n && s[l] == s[r]) {
+            if (r - l + 1 > maxLen) {
+                start = l;
+                maxLen = r - l + 1;
+            }
+            l--;
+            r++;
+        }
+    }
+
+    // Allocate memory for the result string (+1 for null terminator)
+    char* result = (char*)malloc((maxLen + 1) * sizeof(char));
+    strncpy(result, s + start, maxLen);
+    result[maxLen] = '\0';
+
+    return result;
+}
