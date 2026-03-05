@@ -1,0 +1,44 @@
+#include <stdbool.h>
+#include <string.h>
+
+bool isMatch(char* s, char* p) {
+    int s_len = strlen(s);
+    int p_len = strlen(p);
+
+    // dp[i][j] will be true if s[0..i-1] matches p[0..j-1]
+    bool dp[s_len + 1][p_len + 1];
+    memset(dp, false, sizeof(dp));
+
+    // Base case: empty string matches empty pattern
+    dp[0][0] = true;
+
+    // Handle patterns like a*, a*b*, or a*b*c* matching an empty string
+    for (int j = 2; j <= p_len; j++) {
+        if (p[j - 1] == '*') {
+            dp[0][j] = dp[0][j - 2];
+        }
+    }
+
+    for (int i = 1; i <= s_len; i++) {
+        for (int j = 1; j <= p_len; j++) {
+            if (p[j - 1] == '*') {
+                // Two cases for '*':
+                // 1. '*' matches zero of the preceding element
+                dp[i][j] = dp[i][j - 2];
+                
+                // 2. '*' matches one or more of the preceding element
+                char preceding = p[j - 2];
+                if (preceding == '.' || preceding == s[i - 1]) {
+                    dp[i][j] = dp[i][j] || dp[i - 1][j];
+                }
+            } else {
+                // Current characters match if they are equal or pattern has '.'
+                if (p[j - 1] == '.' || p[j - 1] == s[i - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+            }
+        }
+    }
+
+    return dp[s_len][p_len];
+}
