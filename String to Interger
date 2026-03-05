@@ -1,0 +1,31 @@
+int myAtoi(char* s) {
+    int i = 0;
+    int sign = 1;
+    long res = 0; 
+
+    // 1. Skip leading whitespaces
+    while (s[i] == ' ') {
+        i++;
+    }
+
+    // 2. Check for optional sign
+    if (s[i] == '-' || s[i] == '+') {
+        if (s[i] == '-') {
+            sign = -1;
+        }
+        i++;
+    }
+
+    // 3. Convert digits and handle overflow
+    while (s[i] >= '0' && s[i] <= '9') {
+        res = res * 10 + (s[i] - '0');
+
+        // Check for 32-bit signed integer overflow immediately
+        if (sign == 1 && res > INT_MAX) return INT_MAX;
+        if (sign == -1 && -res < INT_MIN) return INT_MIN;
+
+        i++;
+    }
+
+    return (int)(res * sign);
+}
