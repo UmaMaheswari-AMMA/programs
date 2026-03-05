@@ -1,0 +1,42 @@
+#include <stdlib.h>
+#include <string.h>
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+void backtrack(int n, int open, int close, char* current, int index, char** result, int* returnSize) {
+    // Base case: The string is full (length is 2 * n)
+    if (index == 2 * n) {
+        current[index] = '\0';
+        result[*returnSize] = strdup(current);
+        (*returnSize)++;
+        return;
+    }
+
+    // Rule 1: Can we add an open parenthesis?
+    if (open < n) {
+        current[index] = '(';
+        backtrack(n, open + 1, close, current, index + 1, result, returnSize);
+    }
+
+    // Rule 2: Can we add a close parenthesis?
+    if (close < open) {
+        current[index] = ')';
+        backtrack(n, open, close + 1, current, index + 1, result, returnSize);
+    }
+}
+
+char** generateParenthesis(int n, int* returnSize) {
+    *returnSize = 0;
+    
+    // Catalan number formula gives an upper bound for the number of combinations
+    // For n=8 (max), it's 1430. We'll allocate a safe amount.
+    int max_combinations = 2000; 
+    char** result = malloc(max_combinations * sizeof(char*));
+    char* current = malloc((2 * n + 1) * sizeof(char));
+
+    backtrack(n, 0, 0, current, 0, result, returnSize);
+
+    free(current);
+    return result;
+}
