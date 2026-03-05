@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+char* longestCommonPrefix(char** strs, int strsSize) {
+    // Edge case: empty input
+    if (strsSize == 0) return "";
+    
+    // Take the first string as the initial reference
+    char* first = strs[0];
+    int len = strlen(first);
+
+    // Vertical scan: iterate through each character of the first string
+    for (int i = 0; i < len; i++) {
+        char current_char = first[i];
+        
+        // Compare this character with the same index in all other strings
+        for (int j = 1; j < strsSize; j++) {
+            // Stop if we reach the end of a string or find a mismatch
+            if (strs[j][i] == '\0' || strs[j][i] != current_char) {
+                // Terminate the first string at the mismatch point
+                first[i] = '\0';
+                return first;
+            }
+        }
+    }
+
+    return first;
+}
